@@ -36,11 +36,6 @@ namespace NoMoreVehicles
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            if (mode != LoadMode.LoadGame)
-            {
-                return;
-            }
-
             RemoveVehicles();
             RevertPatch();
 
@@ -49,22 +44,10 @@ namespace NoMoreVehicles
 
         private void PerformShow(string message, bool error)
         {
+            // The UI library might not be available at the moment.
             if (UIView.library != null)
             {
                 UIView.library.ShowModal<ExceptionPanel>(nameof(ExceptionPanel)).SetMessage(Name, message, error);
-            }
-            else
-            {
-                // If the UI library is not available for some reason, fallback on throwing an exception.
-                string exMessage = $"{Name}: \n{message}";
-                if (error)
-                {
-                    throw new Exception(exMessage);
-                }
-                else
-                {
-                    throw new WarningException(exMessage);
-                }
             }
         }
 
