@@ -15,44 +15,12 @@ namespace NoMoreVehicles
 
         public string Name => "No More Vehicles";
 
-        /// <summary>Called on game startup or when this mod is enabled in the Content Manager.</summary>
-        public void OnEnabled()
-        {
-            // Look for the More Vehicles mod in the list of installed mods.
-            ulong moreVehiclesModId = 1764208250;
-            var moreVehiclesMod = PluginManager.instance.GetPluginsInfo().FirstOrDefault(mod => mod.publishedFileID.AsUInt64 == moreVehiclesModId);
-
-            // If the mod is not installed
-            if (moreVehiclesMod is null)
-            {
-                ShowError("This mod will not work because the More Vehicles mod is not installed. Subscribe to the More Vehicles mod.");
-            }
-            // If the mod is disabled
-            else if (!moreVehiclesMod.isEnabled)
-            {
-                ShowError("This mod will not work because the More Vehicles mod is disabled. Enable the More Vehicles mod.");
-            }
-        }
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             RemoveVehicles();
             RevertPatch();
 
-            ShowWarning("The Vehicle Manager patch was reverted sucessfully. Save and exit the game, then unsubscribe from this mod and More Vehicles.");
+            UIView.library.ShowModal<ExceptionPanel>(nameof(ExceptionPanel)).SetMessage(Name, "The Vehicle Manager patch was reverted sucessfully. Save and exit the game, then unsubscribe from this mod and More Vehicles.", false);
         }
-
-        private void PerformShow(string message, bool error)
-        {
-            // The UI library might not be available at the moment.
-            if (UIView.library != null)
-            {
-                UIView.library.ShowModal<ExceptionPanel>(nameof(ExceptionPanel)).SetMessage(Name, message, error);
-            }
-        }
-
-        private void ShowError(string message) => PerformShow(message, true);
-
-        private void ShowWarning(string message) => PerformShow(message, false);
     }
 }
