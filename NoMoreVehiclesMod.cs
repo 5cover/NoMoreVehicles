@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
@@ -17,9 +18,11 @@ namespace NoMoreVehicles
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            RemoveVehicles();
-            RevertPatch();
-
+            SimulationManager.instance.AddAction(() =>
+            {
+                RemoveVehicles();
+                RevertPatch();
+            }).Execute();
             UIView.library.ShowModal<ExceptionPanel>(nameof(ExceptionPanel)).SetMessage(Name, "The Vehicle Manager patch was reverted sucessfully. Save and exit the game, then unsubscribe from this mod and More Vehicles.", false);
         }
     }
